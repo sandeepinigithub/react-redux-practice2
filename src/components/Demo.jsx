@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 
-export default function Demo() {
-  const [countryId, setCountryId] = useState(0);
+import { useDispatch, useSelector } from "react-redux";
+import { updateByPayload } from "../reduxStore/countrySlice";
+
+export default function Demo(props) {
+  const dispatch = useDispatch();
+  let cId = useSelector((state) => state.country.id);
+  console.log(cId);
+
+  //   const [countryId, setCountryId] = useState(0);
   let country = [
     {
       id: 1,
@@ -32,6 +39,11 @@ export default function Demo() {
       ],
     },
   ];
+
+  const handleChange = (e) => {
+    // setCountryId(parseInt(e.target.value));
+    dispatch(updateByPayload(parseInt(e.target.value)));
+  };
   return (
     <div>
       <h1>Interview Demo</h1>
@@ -39,21 +51,23 @@ export default function Demo() {
       <select
         name="country"
         id="country"
-        value={countryId}
-        onChange={(e) => setCountryId(parseInt(e.target.value))}
+        value={cId}
+        onChange={(e) => handleChange(e)}
       >
         <option value="0">Select</option>
-        {country.map((c) => (
-          <option value={c.id}>{c.name}</option>
+        {country.map((c, index) => (
+          <option key={index} value={c.id}>
+            {c.name}
+          </option>
         ))}
       </select>
 
       <ul>
-        {countryId !== 0 ? (country
-          .find((item) => item.id == countryId)
-          .states.map((ele) => (
-            <li>{ele.name}</li>
-          ))): ''}
+        {cId !== 0
+          ? country
+              .find((item) => item.id == cId)
+              .states.map((ele, index) => <li key={index}>{ele.name}</li>)
+          : ""}
       </ul>
     </div>
   );
